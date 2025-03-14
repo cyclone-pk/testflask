@@ -1,71 +1,97 @@
-from flask import Flask, render_template_string, redirect, url_for
-import boto3
+import json
+from flask import Flask, request, render_template_string, url_for
+
+from urllib.parse import quote
 
 app = Flask(__name__)
 
-# Create an S3 client (ensure AWS credentials and region are properly configured)
-s3 = boto3.client('s3')
-BUCKET = "YOUR_BUCKET_NAME"
+with open("video_metadata.json", "r") as f:
+    video_metadata_list = json.load(f)
+    
 
-# Template for listing videos. For simplicity, we use render_template_string.
-TEMPLATE = """
-<!DOCTYPE html>
+BUCKET_NAME = "nlpprojectbucketforstoringthevideos2025lakehead"
+
+
+# Define HTML templates using render_template_string for simplicity.
+INDEX_TEMPLATE = """
+<!doctype html>
 <html>
   <head>
-    <title>Video List</title>
+    <title>Video Search Dashboard</title>
   </head>
   <body>
-    <h1>Available Videos</h1>
-    {% if videos %}
-      {% for video in videos %}
-        <div style="margin-bottom: 20px;">
-          <h3>{{ video.key }}</h3>
-          <!-- Video player using the presigned URL -->
-          <video width="480" height="320" controls>
-            <source src="{{ video.url }}" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <br>
-          <!-- Optionally, a link to open the video separately -->
-          <a href="{{ video.url }}" target="_blank">Open Video in New Tab</a>
-        </div>
+    <h1>Video Search Dashboard</h1>
+    <form method="GET" action="/">
+      <input type="text" name="query" placeholder="Search by topic or key phrase" value="{{ query|default('') }}" style="width: 300px;">
+      <input type="submit" value="Search">
+    </form>
+    <hr>
+    <h2>Results:</h2>
+    {% if results %}
+      <ul>
+      {% for video in results %}
+        <li>
+          <a href="{{ url_for('view_video', video_id=video.video_id) }}">{{ video.title }}</a>
+          <br><strong>Topic:</strong> {{ video.topic }}<br>
+          <strong>Key Phrases:</strong> {{ video.key_phrases | join(', ') }}
+        </li>
       {% endfor %}
+      </ul>
     {% else %}
-      <p>No videos found.</p>
+      <p>No videos match your search.</p>
     {% endif %}
   </body>
 </html>
 """
 
-@app.route("/")
+VIDEO_TEMPLATE = """
+<!doctype html>
+<html>
+  <head>
+    <title>{{ video.title }}</title>
+  </head>
+  <body>
+    <h1>{{ video.title }}</h1>
+    <video width="640" height="480" controls>
+      <source src="{{ video_url }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <p><strong>Topic:</strong> {{ video.topic }}</p>
+    <p><strong>Key Phrases:</strong> {{ video.key_phrases | join(', ') }}</p>
+    <p><a href="{{ url_for('index') }}">Back to search</a></p>
+  </body>
+</html>
+"""
+
+@app.route("/", methods=["GET"])
 def index():
-    return "hello";
-    # List objects in the bucket
-    response = s3.list_objects_v2(Bucket=BUCKET)
-    videos = []
-    for obj in response.get('Contents', []):
-        key = obj['Key']
-        # Filter for .mp4 files (adjust as needed)
-        if key.lower().endswith('.mp4'):
-            # Generate a presigned URL valid for 1 hour
-            presigned_url = s3.generate_presigned_url(
-                'get_object',
-                Params={'Bucket': BUCKET, 'Key': key},
-                ExpiresIn=3600
-            )
-            videos.append({"key": key, "url": presigned_url})
-    return render_template_string(TEMPLATE, videos=videos)
+    query = request.args.get("query", "").strip().lower()
+    if query:
+        filtered = []
+        for video in video_metadata_list:
+            # Search in topic and key phrases (case-insensitive)
+            if query in video["topic"].lower() or any(query in phrase.lower() for phrase in video["key_phrases"]):
+                filtered.append(video)
+    else:
+        filtered = video_metadata_list
+    return render_template_string(INDEX_TEMPLATE, results=filtered, query=query)
 
-@app.route("/video/<path:key>")
-def stream_video(key):
-    # Alternatively, you can have a route that redirects to a presigned URL.
-    presigned_url = s3.generate_presigned_url(
-        'get_object',
-        Params={'Bucket': BUCKET, 'Key': key},
-        ExpiresIn=3600
-    )
-    return redirect(presigned_url)
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
 
+@app.route("/video/<video_id>")
+def view_video(video_id):
+    # Find the video by video_id.
+    video = next((v for v in video_metadata_list if v["video_id"] == video_id), None)
+    if not video:
+        return "Video not found", 404
+    # Construct the public URL.
+    bucket = "nlpprojectbucketforstoringthevideos2025lakehead"
+    s3_key = video["s3_key"]
+    encoded_key = quote(s3_key)
+    video_url = f"https://{bucket}.s3.amazonaws.com/{encoded_key}"
+    print(video_url)
+    return render_template_string(VIDEO_TEMPLATE, video=video, video_url=video_url)
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',debug=True)
