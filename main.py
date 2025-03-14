@@ -39,6 +39,7 @@ TEMPLATE = """
 
 @app.route("/")
 def index():
+    return "hello";
     # List objects in the bucket
     response = s3.list_objects_v2(Bucket=BUCKET)
     videos = []
