@@ -79,6 +79,17 @@ INDEX_TEMPLATE = """
         margin: 2px;
         font-size: 14px;
       }
+      button.show-all-tags {
+        background: none;
+        border: none;
+        color: #007BFF;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 10px;
+      }
+      button.show-all-tags:hover {
+        text-decoration: underline;
+      }
       a {
         color: #007BFF;
         text-decoration: none;
@@ -106,9 +117,18 @@ INDEX_TEMPLATE = """
             </a>
             <p><strong>Topic:</strong> {{ video.topic }}</p>
             <p><strong>Key Phrases:</strong>
-              {% for key in video.key_phrases %}
-                <span class="keyphrase">{{ key }}</span>
-              {% endfor %}
+              <span class="tags-container">
+                {% for key in video.key_phrases %}
+                  {% if loop.index <= 3 %}
+                    <span class="keyphrase">{{ key }}</span>
+                  {% else %}
+                    <span class="keyphrase extra" style="display: none;">{{ key }}</span>
+                  {% endif %}
+                {% endfor %}
+              </span>
+              {% if video.key_phrases|length > 3 %}
+                <button class="show-all-tags" onclick="toggleTags(event, this)">Read all tags</button>
+              {% endif %}
             </p>
           </li>
         {% endfor %}
@@ -117,6 +137,17 @@ INDEX_TEMPLATE = """
         <p>No videos match your search.</p>
       {% endif %}
     </div>
+    <script>
+      function toggleTags(event, btn) {
+        event.preventDefault();
+        var parent = btn.parentNode;
+        var extraTags = parent.querySelectorAll('.keyphrase.extra');
+        for (var i = 0; i < extraTags.length; i++) {
+          extraTags[i].style.display = "inline-block";
+        }
+        btn.style.display = "none";
+      }
+    </script>
   </body>
 </html>
 
