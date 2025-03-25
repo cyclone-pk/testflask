@@ -94,7 +94,7 @@ INDEX_TEMPLATE = """
       }
       /* Key phrases container styling */
       .tags-container {
-        max-height: 150px;
+        max-height: 65px;
         overflow: hidden;
         transition: max-height 0.3s ease;
       }
