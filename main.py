@@ -139,7 +139,7 @@ INDEX_TEMPLATE = """
             <div class="video-item">
             <div class="video-thumbnail">
   <video muted playsinline>
-    <source src="https://{{ bucket }}.s3.amazonaws.com/{{ video.s3_key }}" type="video/mp4">
+    <source src="https://{{ BUCKET_NAME }}.s3.amazonaws.com/{{ video.s3_key }}" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
