@@ -159,7 +159,7 @@ INDEX_TEMPLATE = """
                     <span class="keyphrase">{{ key }}</span>
                   {% endfor %}
                 </div>
-                <button class="show-all-tags" id="btn-{{ video.video_id }}" onclick="toggleTags(event, '{{ video.video_id }}')">Read all tags</button>
+                <button class="show-all-tags" id="btn-{{ video.video_id }}" onclick="toggleTags(event, '{{ video.video_id }}')">Show All Phrases</button>
               </div>
             </div>
           </li>
@@ -199,18 +199,86 @@ VIDEO_TEMPLATE = """
 <html>
   <head>
     <title>{{ video.title }}</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 5px;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      video {
+        display: block;
+        margin: 20px auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .details {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .details p {
+        margin: 10px 0;
+        font-size: 16px;
+        color: #555;
+      }
+      .keyphrases {
+        display: inline-flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+      .keyphrase {
+        display: inline-block;
+        background-color: #e7f3ff;
+        color: #007BFF;
+        border: 1px solid #007BFF;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+      }
+      a {
+        color: #007BFF;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
-    <h1>{{ video.title }}</h1>
-    <video width="640" height="480" controls>
-      <source src="{{ video_url }}" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <p><strong>Topic:</strong> {{ video.topic }}</p>
-    <p><strong>Key Phrases:</strong> {{ video.key_phrases | join(', ') }}</p>
-    <p><a href="{{ url_for('index') }}">Back to search</a></p>
+    <div class="container">
+      <h1>{{ video.title }}</h1>
+      <video width="640" height="480" controls>
+        <source src="{{ video_url }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="details">
+        <p><strong>Topic:</strong> {{ video.topic }}</p>
+        <p><strong>Key Phrases:</strong></p>
+        <div class="keyphrases">
+          {% for key in video.key_phrases %}
+            <span class="keyphrase">{{ key }}</span>
+          {% endfor %}
+        </div>
+        <p><a href="{{ url_for('index') }}">Back to search</a></p>
+      </div>
+    </div>
   </body>
 </html>
+
 """
 @app.route("/", methods=["GET"])
 def index():
