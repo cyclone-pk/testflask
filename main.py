@@ -92,7 +92,12 @@ INDEX_TEMPLATE = """
       .video-details p {
         margin: 5px 0;
       }
-      /* Key phrases tag styling */
+      /* Key phrases container styling */
+      .tags-container {
+        max-height: 150px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
       .keyphrase {
         display: inline-block;
         background-color: #e7f3ff;
@@ -109,7 +114,7 @@ INDEX_TEMPLATE = """
         color: #007BFF;
         cursor: pointer;
         font-size: 14px;
-        margin-left: 10px;
+        margin-top: 5px;
       }
       button.show-all-tags:hover {
         text-decoration: underline;
@@ -137,31 +142,24 @@ INDEX_TEMPLATE = """
         {% for video in results %}
           <li>
             <div class="video-item">
-            <div class="video-thumbnail">
-  <video muted playsinline>
-    <source src="https://nlpprojectbucketforstoringthevideos2025lakehead.s3.amazonaws.com/{{ video.s3_key }}" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-</div>
+              <div class="video-thumbnail">
+                <video muted playsinline>
+                  <source src="https://nlpprojectbucketforstoringthevideos2025lakehead.s3.amazonaws.com/{{ video.s3_key }}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
               <div class="video-details">
                 <a href="{{ url_for('view_video', video_id=video.video_id) }}">
                   <h3>{{ video.title }}</h3>
                 </a>
                 <p><strong>Topic:</strong> {{ video.topic }}</p>
-                <p><strong>Key Phrases:</strong>
-                  <span class="tags-container">
-                    {% for key in video.key_phrases %}
-                      {% if loop.index <= 3 %}
-                        <span class="keyphrase">{{ key }}</span>
-                      {% else %}
-                        <span class="keyphrase extra" style="display: none;">{{ key }}</span>
-                      {% endif %}
-                    {% endfor %}
-                  </span>
-                  {% if video.key_phrases|length > 3 %}
-                    <button class="show-all-tags" onclick="toggleTags(event, this)">Read all tags</button>
-                  {% endif %}
-                </p>
+                <p><strong>Key Phrases:</strong></p>
+                <div class="tags-container" id="tags-container-{{ video.video_id }}">
+                  {% for key in video.key_phrases %}
+                    <span class="keyphrase">{{ key }}</span>
+                  {% endfor %}
+                </div>
+                <button class="show-all-tags" id="btn-{{ video.video_id }}" onclick="toggleTags(event, '{{ video.video_id }}')">Read all tags</button>
               </div>
             </div>
           </li>
@@ -172,15 +170,26 @@ INDEX_TEMPLATE = """
       {% endif %}
     </div>
     <script>
-      function toggleTags(event, btn) {
+      function toggleTags(event, videoId) {
         event.preventDefault();
-        var parent = btn.parentNode;
-        var extraTags = parent.querySelectorAll('.keyphrase.extra');
-        for (var i = 0; i < extraTags.length; i++) {
-          extraTags[i].style.display = "inline-block";
-        }
-        btn.style.display = "none";
+        var container = document.getElementById('tags-container-' + videoId);
+        container.style.maxHeight = "none";
+        var btn = document.getElementById('btn-' + videoId);
+        btn.style.display = 'none';
       }
+
+      // On window load, check if each tags-container is overflowing; if not, hide its button
+      window.addEventListener('load', function() {
+        document.querySelectorAll('.tags-container').forEach(function(container) {
+          if (container.scrollHeight <= container.clientHeight) {
+            var videoId = container.id.replace('tags-container-', '');
+            var btn = document.getElementById('btn-' + videoId);
+            if (btn) {
+              btn.style.display = 'none';
+            }
+          }
+        });
+      });
     </script>
   </body>
 </html>
