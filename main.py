@@ -18,49 +18,108 @@ INDEX_TEMPLATE = """
 <html>
   <head>
     <title>Video Search Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 5px;
+      }
+      h1, h2 {
+        color: #333;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+      form input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      form input[type="submit"] {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      form input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        background: #fafafa;
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .keyphrase {
+        display: inline-block;
+        background-color: #e7f3ff;
+        color: #007BFF;
+        border: 1px solid #007BFF;
+        padding: 5px 10px;
+        border-radius: 15px;
+        margin: 2px;
+        font-size: 14px;
+      }
+      a {
+        color: #007BFF;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
-    <h1>Video Search Dashboard</h1>
-    <form method="GET" action="/">
-      <input type="text" name="query" placeholder="Search by topic or key phrase" value="{{ query|default('') }}" style="width: 300px;">
-      <input type="submit" value="Search">
-    </form>
-    <hr>
-    <h2>Results:</h2>
-    {% if results %}
-      <ul>
-      {% for video in results %}
-        <li>
-          <a href="{{ url_for('view_video', video_id=video.video_id) }}">{{ video.title }}</a>
-          <br><strong>Topic:</strong> {{ video.topic }}<br>
-          <strong>Key Phrases:</strong> {{ video.key_phrases | join(', ') }}
-        </li>
-      {% endfor %}
-      </ul>
-    {% else %}
-      <p>No videos match your search.</p>
-    {% endif %}
+    <div class="container">
+      <h1>Video Search Dashboard</h1>
+      <form method="GET" action="/">
+        <input type="text" name="query" placeholder="Search by topic or key phrase" value="{{ query|default('') }}">
+        <input type="submit" value="Search">
+      </form>
+      <hr>
+      <h2>Results:</h2>
+      {% if results %}
+        <ul>
+        {% for video in results %}
+          <li>
+            <a href="{{ url_for('view_video', video_id=video.video_id) }}">
+              <h3>{{ video.title }}</h3>
+            </a>
+            <p><strong>Topic:</strong> {{ video.topic }}</p>
+            <p><strong>Key Phrases:</strong>
+              {% for key in video.key_phrases %}
+                <span class="keyphrase">{{ key }}</span>
+              {% endfor %}
+            </p>
+          </li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p>No videos match your search.</p>
+      {% endif %}
+    </div>
   </body>
 </html>
-"""
 
-VIDEO_TEMPLATE = """
-<!doctype html>
-<html>
-  <head>
-    <title>{{ video.title }}</title>
-  </head>
-  <body>
-    <h1>{{ video.title }}</h1>
-    <video width="640" height="480" controls>
-      <source src="{{ video_url }}" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <p><strong>Topic:</strong> {{ video.topic }}</p>
-    <p><strong>Key Phrases:</strong> {{ video.key_phrases | join(', ') }}</p>
-    <p><a href="{{ url_for('index') }}">Back to search</a></p>
-  </body>
-</html>
 """
 
 @app.route("/", methods=["GET"])
