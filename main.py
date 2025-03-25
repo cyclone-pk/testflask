@@ -185,7 +185,24 @@ INDEX_TEMPLATE = """
   </body>
 </html>
 """
-
+VIDEO_TEMPLATE = """
+<!doctype html>
+<html>
+  <head>
+    <title>{{ video.title }}</title>
+  </head>
+  <body>
+    <h1>{{ video.title }}</h1>
+    <video width="640" height="480" controls>
+      <source src="{{ video_url }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <p><strong>Topic:</strong> {{ video.topic }}</p>
+    <p><strong>Key Phrases:</strong> {{ video.key_phrases | join(', ') }}</p>
+    <p><a href="{{ url_for('index') }}">Back to search</a></p>
+  </body>
+</html>
+"""
 @app.route("/", methods=["GET"])
 def index():
     query = request.args.get("query", "").strip().lower()
