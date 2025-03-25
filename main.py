@@ -137,12 +137,12 @@ INDEX_TEMPLATE = """
         {% for video in results %}
           <li>
             <div class="video-item">
-              <div class="video-thumbnail">
-                <video muted playsinline>
-                  <source src="{{ video.thumbnail_url }}" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              </div>
+            <div class="video-thumbnail">
+  <video muted playsinline>
+    <source src="https://{{ bucket }}.s3.amazonaws.com/{{ video.s3_key }}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
               <div class="video-details">
                 <a href="{{ url_for('view_video', video_id=video.video_id) }}">
                   <h3>{{ video.title }}</h3>
