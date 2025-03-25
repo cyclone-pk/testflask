@@ -19,6 +19,7 @@ INDEX_TEMPLATE = """
   <head>
     <title>Video Search Dashboard</title>
     <style>
+      /* General styling */
       body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
@@ -69,6 +70,29 @@ INDEX_TEMPLATE = """
         border: 1px solid #ddd;
         border-radius: 5px;
       }
+      /* Flex container for each video item */
+      .video-item {
+        display: flex;
+        align-items: flex-start;
+      }
+      /* Left side: Square video thumbnail */
+      .video-thumbnail {
+        margin-right: 15px;
+      }
+      .video-thumbnail video {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5px;
+      }
+      /* Right side: Video details */
+      .video-details h3 {
+        margin: 0 0 5px 0;
+      }
+      .video-details p {
+        margin: 5px 0;
+      }
+      /* Key phrases tag styling */
       .keyphrase {
         display: inline-block;
         background-color: #e7f3ff;
@@ -112,24 +136,34 @@ INDEX_TEMPLATE = """
         <ul>
         {% for video in results %}
           <li>
-            <a href="{{ url_for('view_video', video_id=video.video_id) }}">
-              <h3>{{ video.title }}</h3>
-            </a>
-            <p><strong>Topic:</strong> {{ video.topic }}</p>
-            <p><strong>Key Phrases:</strong>
-              <span class="tags-container">
-                {% for key in video.key_phrases %}
-                  {% if loop.index <= 3 %}
-                    <span class="keyphrase">{{ key }}</span>
-                  {% else %}
-                    <span class="keyphrase extra" style="display: none;">{{ key }}</span>
+            <div class="video-item">
+              <div class="video-thumbnail">
+                <video muted playsinline>
+                  <source src="{{ video.thumbnail_url }}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="video-details">
+                <a href="{{ url_for('view_video', video_id=video.video_id) }}">
+                  <h3>{{ video.title }}</h3>
+                </a>
+                <p><strong>Topic:</strong> {{ video.topic }}</p>
+                <p><strong>Key Phrases:</strong>
+                  <span class="tags-container">
+                    {% for key in video.key_phrases %}
+                      {% if loop.index <= 3 %}
+                        <span class="keyphrase">{{ key }}</span>
+                      {% else %}
+                        <span class="keyphrase extra" style="display: none;">{{ key }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </span>
+                  {% if video.key_phrases|length > 3 %}
+                    <button class="show-all-tags" onclick="toggleTags(event, this)">Read all tags</button>
                   {% endif %}
-                {% endfor %}
-              </span>
-              {% if video.key_phrases|length > 3 %}
-                <button class="show-all-tags" onclick="toggleTags(event, this)">Read all tags</button>
-              {% endif %}
-            </p>
+                </p>
+              </div>
+            </div>
           </li>
         {% endfor %}
         </ul>
@@ -150,7 +184,6 @@ INDEX_TEMPLATE = """
     </script>
   </body>
 </html>
-
 """
 
 @app.route("/", methods=["GET"])
