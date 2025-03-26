@@ -9,7 +9,7 @@ with open("video_metadata.json", "r") as f:
     video_metadata_list = json.load(f)
     
 
-BUCKET_NAME = "nlpprojectbucketforstoringthevideos2025lakehead"
+BUCKET_NAME = "mnoumannaeem3bucket"
 
 
 # Define HTML templates using render_template_string for simplicity.
@@ -302,7 +302,7 @@ def view_video(video_id):
     if not video:
         return "Video not found", 404
     # Construct the public URL.
-    bucket = "nlpprojectbucketforstoringthevideos2025lakehead"
+    bucket = "mnoumannaeem3bucket"
     s3_key = video["s3_key"]
     encoded_key = quote(s3_key)
     video_url = f"https://{bucket}.s3.amazonaws.com/{encoded_key}"
