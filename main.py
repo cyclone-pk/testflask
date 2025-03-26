@@ -258,68 +258,86 @@ VIDEO_TEMPLATE = """
   <head>
     <title>{{ video.title }}</title>
     <style>
+      /* Basic reset */
+      * {
+        box-sizing: border-box;
+      }
       body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
         margin: 0;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        color: #333;
         padding: 20px;
       }
       .container {
-        max-width: 800px;
-        margin: 0 auto;
-        background-color: #fff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        border-radius: 5px;
+        max-width: 900px;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        padding: 30px;
       }
       h1 {
         text-align: center;
-        color: #333;
+        margin-bottom: 20px;
+        color: #2c3e50;
       }
       video {
         display: block;
         margin: 20px auto;
-        border: 1px solid #ddd;
-        border-radius: 5px;
+        width: 100%;
+        max-width: 800px;
+        border-radius: 10px;
+        border: none;
       }
       .details {
         text-align: center;
-        margin-top: 20px;
+        margin-top: 30px;
       }
       .details p {
-        margin: 10px 0;
-        font-size: 16px;
+        margin: 15px 0;
+        font-size: 18px;
         color: #555;
       }
       .keyphrases {
-        display: inline-flex;
+        display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 10px;
+        margin: 15px 0;
       }
       .keyphrase {
-        display: inline-block;
-        background-color: #e7f3ff;
-        color: #007BFF;
-        border: 1px solid #007BFF;
-        padding: 5px 10px;
-        border-radius: 15px;
+        background-color: #3498db;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 20px;
         font-size: 14px;
+        border: none;
       }
       a {
-        color: #007BFF;
         text-decoration: none;
+        color: #3498db;
         font-weight: bold;
       }
       a:hover {
         text-decoration: underline;
+      }
+      /* Responsive Adjustments */
+      @media (max-width: 600px) {
+        .container {
+          margin: 20px;
+          padding: 20px;
+        }
+        .details p {
+          font-size: 16px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>{{ video.title }}</h1>
-      <video width="640" height="480" controls>
+      <video controls>
         <source src="{{ video_url }}" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -336,6 +354,7 @@ VIDEO_TEMPLATE = """
     </div>
   </body>
 </html>
+
 
 """
 @app.route("/", methods=["GET"])
