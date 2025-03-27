@@ -17,7 +17,7 @@ INDEX_TEMPLATE = """
 <!doctype html>
 <html>
   <head>
-    <title>Video Search Dashboard</title>
+    <title>NLP project 2025</title>
     <style>
       /* Global Styles */
       body {
