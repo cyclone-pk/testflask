@@ -9,7 +9,7 @@ with open("video_metadata.json", "r") as f:
     video_metadata_list = json.load(f)
     
 
-BUCKET_NAME = "nlpprojectbucketforstoringthevideos2025lakehead"
+BUCKET_NAME = "mnoumannaeem3bucket"
 
 
 # Define HTML templates using render_template_string for simplicity.
@@ -19,118 +19,176 @@ INDEX_TEMPLATE = """
   <head>
     <title>Video Search Dashboard</title>
     <style>
-      /* General styling */
+      /* Global Styles */
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        background: linear-gradient(135deg, #74ABE2, #5563DE);
         margin: 0;
-        padding: 20px;
-      }
-      .container {
-        max-width: 800px;
-        margin: auto;
-        background: #fff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        border-radius: 5px;
-      }
-      h1, h2 {
+        padding: 0;
         color: #333;
       }
+      .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      h1 {
+        color: #2C3E50;
+        margin-bottom: 10px;
+      }
+      h2 {
+        color: #34495E;
+      }
+      
+      /* Form Styling */
       form {
-        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
       }
       form input[type="text"] {
-        padding: 10px;
+        padding: 12px 15px;
         font-size: 16px;
-        width: 300px;
-        border: 1px solid #ccc;
+        width: 350px;
+        border: 2px solid #ccc;
         border-radius: 4px;
+        margin-right: 10px;
       }
       form input[type="submit"] {
-        padding: 10px 20px;
+        padding: 12px 20px;
         font-size: 16px;
-        background-color: #007BFF;
+        background-color: #3498DB;
         color: #fff;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        transition: background-color 0.3s ease;
       }
       form input[type="submit"]:hover {
-        background-color: #0056b3;
+        background-color: #2980B9;
       }
+      
+      /* Horizontal Rule */
+      hr {
+        border: 0;
+        height: 1px;
+        background: #eee;
+        margin: 20px 0;
+      }
+      
+      /* Results List */
       ul {
         list-style-type: none;
         padding: 0;
       }
       li {
-        background: #fafafa;
-        margin-bottom: 15px;
-        padding: 15px;
+        background: #f9f9f9;
+        margin-bottom: 20px;
+        padding: 20px;
         border: 1px solid #ddd;
-        border-radius: 5px;
+        border-radius: 8px;
       }
-      /* Flex container for each video item */
+      
+      /* Video Item Layout */
       .video-item {
         display: flex;
-        align-items: flex-start;
+        flex-wrap: wrap;
       }
-      /* Left side: Square video thumbnail */
       .video-thumbnail {
-        margin-right: 15px;
+        flex: 1 1 150px;
+        margin-right: 20px;
+        margin-bottom: 15px;
       }
       .video-thumbnail video {
-        width: 150px;
-        height: 150px;
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        border-radius: 8px;
         object-fit: cover;
-        border-radius: 5px;
       }
-      /* Right side: Video details */
+      .video-details {
+        flex: 2 1 300px;
+      }
       .video-details h3 {
-        margin: 0 0 5px 0;
+        margin-top: 0;
+        margin-bottom: 8px;
+        color: #2C3E50;
       }
       .video-details p {
         margin: 5px 0;
       }
-      /* Key phrases container styling */
+      
+      /* Tags Section */
       .tags-container {
-        max-height: 65px;
+        max-height: 70px;
         overflow: hidden;
         transition: max-height 0.3s ease;
+        margin-top: 10px;
       }
       .keyphrase {
         display: inline-block;
-        background-color: #e7f3ff;
-        color: #007BFF;
-        border: 1px solid #007BFF;
-        padding: 5px 10px;
-        border-radius: 15px;
-        margin: 2px;
+        background-color: #ECF0F1;
+        color: #2980B9;
+        border: 1px solid #2980B9;
+        padding: 6px 12px;
+        border-radius: 20px;
+        margin: 3px;
         font-size: 14px;
       }
       button.show-all-tags {
         background: none;
         border: none;
-        color: #007BFF;
+        color: #2980B9;
         cursor: pointer;
         font-size: 14px;
-        margin-top: 5px;
+        margin-top: 8px;
       }
       button.show-all-tags:hover {
         text-decoration: underline;
       }
+      
+      /* Link Styling */
       a {
-        color: #007BFF;
+        color: #2980B9;
         text-decoration: none;
       }
       a:hover {
         text-decoration: underline;
       }
+      
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .video-item {
+          flex-direction: column;
+        }
+        .video-thumbnail {
+          margin-right: 0;
+        }
+        form {
+          flex-direction: column;
+        }
+        form input[type="text"] {
+          margin-right: 0;
+          margin-bottom: 10px;
+          width: 100%;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Video Search Dashboard</h1>
+      <header>
+        <h1>Video Search Dashboard</h1>
+        <p>Find the best videos by topic or key phrases</p>
+      </header>
       <form method="GET" action="/">
         <input type="text" name="query" placeholder="Search by topic or key phrase" value="{{ query|default('') }}">
         <input type="submit" value="Search">
@@ -177,7 +235,6 @@ INDEX_TEMPLATE = """
         var btn = document.getElementById('btn-' + videoId);
         btn.style.display = 'none';
       }
-
       // On window load, check if each tags-container is overflowing; if not, hide its button
       window.addEventListener('load', function() {
         document.querySelectorAll('.tags-container').forEach(function(container) {
@@ -193,6 +250,7 @@ INDEX_TEMPLATE = """
     </script>
   </body>
 </html>
+
 """
 VIDEO_TEMPLATE = """
 <!doctype html>
@@ -200,73 +258,90 @@ VIDEO_TEMPLATE = """
   <head>
     <title>{{ video.title }}</title>
     <style>
+      /* Basic reset */
+      * {
+        box-sizing: border-box;
+      }
       body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
         margin: 0;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        color: #333;
         padding: 20px;
       }
       .container {
-        max-width: 800px;
-        margin: 0 auto;
-        background-color: #fff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        border-radius: 5px;
+        max-width: 900px;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        padding: 30px;
       }
       h1 {
         text-align: center;
-        color: #333;
+        margin-bottom: 20px;
+        color: #2c3e50;
       }
       video {
         display: block;
         margin: 20px auto;
-        border: 1px solid #ddd;
-        border-radius: 5px;
+        width: 100%;
+        max-width: 800px;
+        border-radius: 10px;
+        border: none;
       }
       .details {
         text-align: center;
-        margin-top: 20px;
+        margin-top: 30px;
       }
       .details p {
-        margin: 10px 0;
-        font-size: 16px;
+        margin: 15px 0;
+        font-size: 18px;
         color: #555;
       }
       .keyphrases {
-        display: inline-flex;
+        display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 10px;
+        margin: 15px 0;
       }
       .keyphrase {
-        display: inline-block;
-        background-color: #e7f3ff;
-        color: #007BFF;
-        border: 1px solid #007BFF;
-        padding: 5px 10px;
-        border-radius: 15px;
+        background-color: #3498db;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 20px;
         font-size: 14px;
+        border: none;
       }
       a {
-        color: #007BFF;
         text-decoration: none;
+        color: #3498db;
         font-weight: bold;
       }
       a:hover {
         text-decoration: underline;
+      }
+      /* Responsive Adjustments */
+      @media (max-width: 600px) {
+        .container {
+          margin: 20px;
+          padding: 20px;
+        }
+        .details p {
+          font-size: 16px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>{{ video.title }}</h1>
-      <video width="640" height="480" controls>
+      <video controls>
         <source src="{{ video_url }}" type="video/mp4">
         Your browser does not support the video tag.
       </video>
       <div class="details">
-        <p><strong>Description:</strong> {{ video.transcription }}</p>
         <p><strong>Topic:</strong> {{ video.topic }}</p>
         <p><strong>Key Phrases:</strong></p>
         <div class="keyphrases">
@@ -279,6 +354,7 @@ VIDEO_TEMPLATE = """
     </div>
   </body>
 </html>
+
 
 """
 @app.route("/", methods=["GET"])
@@ -303,7 +379,7 @@ def view_video(video_id):
     if not video:
         return "Video not found", 404
     # Construct the public URL.
-    bucket = "nlpprojectbucketforstoringthevideos2025lakehead"
+    bucket = "mnoumannaeem3bucket"
     s3_key = video["s3_key"]
     encoded_key = quote(s3_key)
     video_url = f"https://{bucket}.s3.amazonaws.com/{encoded_key}"
