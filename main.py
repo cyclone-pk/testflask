@@ -22,10 +22,10 @@ INDEX_TEMPLATE = """
       /* Global Styles */
       body {
         font-family: 'Helvetica Neue', Arial, sans-serif;
-        background: linear-gradient(135deg, #74ABE2, #5563DE);
+        background: linear-gradient(135deg, #667eea, #764ba2);
         margin: 0;
         padding: 0;
-        color: #333;
+        color: #2d3436;
       }
       .container {
         max-width: 1200px;
@@ -40,11 +40,11 @@ INDEX_TEMPLATE = """
         margin-bottom: 30px;
       }
       h1 {
-        color: #2C3E50;
+        color: #2d3436;
         margin-bottom: 10px;
       }
       h2 {
-        color: #34495E;
+        color: #2d3436;
       }
       
       /* Form Styling */
@@ -58,14 +58,14 @@ INDEX_TEMPLATE = """
         padding: 12px 15px;
         font-size: 16px;
         width: 350px;
-        border: 2px solid #ccc;
+        border: 2px solid #dfe6e9;
         border-radius: 4px;
         margin-right: 10px;
       }
       form input[type="submit"] {
         padding: 12px 20px;
         font-size: 16px;
-        background-color: #3498DB;
+        background-color: #6c5ce7;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -73,14 +73,14 @@ INDEX_TEMPLATE = """
         transition: background-color 0.3s ease;
       }
       form input[type="submit"]:hover {
-        background-color: #2980B9;
+        background-color: #574b90;
       }
       
       /* Horizontal Rule */
       hr {
         border: 0;
         height: 1px;
-        background: #eee;
+        background: #dfe6e9;
         margin: 20px 0;
       }
       
@@ -93,9 +93,9 @@ INDEX_TEMPLATE = """
         grid-gap: 20px;
       }
       li {
-        background: #f9f9f9;
+        background: #f1f2f6;
         padding: 20px;
-        border: 1px solid #ddd;
+        border: 1px solid #dfe6e9;
         border-radius: 8px;
       }
       
@@ -116,7 +116,7 @@ INDEX_TEMPLATE = """
       .video-details h3 {
         margin-top: 0;
         margin-bottom: 8px;
-        color: #2C3E50;
+        color: #2d3436;
       }
       .video-details p {
         margin: 5px 0;
@@ -131,9 +131,9 @@ INDEX_TEMPLATE = """
       }
       .keyphrase {
         display: inline-block;
-        background-color: #ECF0F1;
-        color: #2980B9;
-        border: 1px solid #2980B9;
+        background-color: #f5f6fa;
+        color: #6c5ce7;
+        border: 1px solid #6c5ce7;
         padding: 6px 12px;
         border-radius: 20px;
         margin: 3px;
@@ -142,7 +142,7 @@ INDEX_TEMPLATE = """
       button.show-all-tags {
         background: none;
         border: none;
-        color: #2980B9;
+        color: #6c5ce7;
         cursor: pointer;
         font-size: 14px;
         margin-top: 8px;
@@ -153,7 +153,7 @@ INDEX_TEMPLATE = """
       
       /* Link Styling */
       a {
-        color: #2980B9;
+        color: #6c5ce7;
         text-decoration: none;
       }
       a:hover {
@@ -240,6 +240,7 @@ INDEX_TEMPLATE = """
     </script>
   </body>
 </html>
+
 
 
 """
