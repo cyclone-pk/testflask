@@ -17,7 +17,7 @@ INDEX_TEMPLATE = """
 <!doctype html>
 <html>
   <head>
-    <title>NLP project 2025</title>
+    <title>NLP Project 2025</title>
     <style>
       /* Global Styles */
       body {
@@ -28,7 +28,7 @@ INDEX_TEMPLATE = """
         color: #333;
       }
       .container {
-        max-width: 1000px;
+        max-width: 1200px;
         margin: 40px auto;
         background: #fff;
         padding: 30px;
@@ -84,14 +84,16 @@ INDEX_TEMPLATE = """
         margin: 20px 0;
       }
       
-      /* Results List */
+      /* Results Grid */
       ul {
         list-style-type: none;
         padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-gap: 20px;
       }
       li {
         background: #f9f9f9;
-        margin-bottom: 20px;
         padding: 20px;
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -100,22 +102,16 @@ INDEX_TEMPLATE = """
       /* Video Item Layout */
       .video-item {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
       }
       .video-thumbnail {
-        flex: 1 1 150px;
-        margin-right: 20px;
         margin-bottom: 15px;
       }
       .video-thumbnail video {
         width: 100%;
-        max-width: 200px;
         height: auto;
         border-radius: 8px;
         object-fit: cover;
-      }
-      .video-details {
-        flex: 2 1 300px;
       }
       .video-details h3 {
         margin-top: 0;
@@ -166,12 +162,6 @@ INDEX_TEMPLATE = """
       
       /* Responsive Adjustments */
       @media (max-width: 768px) {
-        .video-item {
-          flex-direction: column;
-        }
-        .video-thumbnail {
-          margin-right: 0;
-        }
         form {
           flex-direction: column;
         }
@@ -186,7 +176,7 @@ INDEX_TEMPLATE = """
   <body>
     <div class="container">
       <header>
-        <h1>NLP project 2025</h1>
+        <h1>NLP Project 2025</h1>
         <p>Find the best videos by topic or key phrases</p>
       </header>
       <form method="GET" action="/">
@@ -250,6 +240,7 @@ INDEX_TEMPLATE = """
     </script>
   </body>
 </html>
+
 
 """
 VIDEO_TEMPLATE = """
