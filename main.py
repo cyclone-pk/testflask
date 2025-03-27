@@ -186,7 +186,7 @@ INDEX_TEMPLATE = """
   <body>
     <div class="container">
       <header>
-        <h1>>NLP project 2025</h1>
+        <h1>NLP project 2025</h1>
         <p>Find the best videos by topic or key phrases</p>
       </header>
       <form method="GET" action="/">
