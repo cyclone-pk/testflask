@@ -266,6 +266,7 @@ VIDEO_TEMPLATE = """
         Your browser does not support the video tag.
       </video>
       <div class="details">
+        <p><strong>Description:</strong> {{ video.description }}</p>
         <p><strong>Topic:</strong> {{ video.topic }}</p>
         <p><strong>Key Phrases:</strong></p>
         <div class="keyphrases">
